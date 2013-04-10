@@ -49,4 +49,16 @@ describe('config loader', function() {
     });
   });
 
+  it('can merge several configs to give a root config', function(done) {
+    config.loadRootConfig(testDataPath(''), 'simple', function(err, res) {
+      assert.equal(err, null);
+      assert.deepEqual(res, {
+        one: 1,
+        map: { key: 'value' },
+        items: [ 'one', 'two', 'three' ]
+      });
+      done();
+    });
+  });
+
 });
