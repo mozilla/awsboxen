@@ -1,0 +1,22 @@
+{
+  "author": "Ryan Kelly <rfkelly@mozilla.com>",
+  "name": "awsboxen",
+  "description": "Deploying and Scaling NodeJS apps on Amazon's EC2",
+  "version": "0.1.0",
+  "license": "MPL 2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rfk/awsboxen.git"
+  },
+  "main": "./lib/index.js",
+  "bin": {
+    "awsboxen": "./lib/awsboxen.js"
+  },
+  "dependencies": {
+    "awsbox": "0.4.2",
+    "awssum": "1.0.0-beta",
+    "awssum-amazon": "1.0.2",
+    "awssum-amazon-cloudfront": "1.0.1"
+    "docopt": "0.4.0",
+  }
+}
