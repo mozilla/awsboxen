@@ -17,6 +17,15 @@
     "awssum": "1.0.0-beta",
     "awssum-amazon": "1.0.2",
     "awssum-amazon-cloudfront": "1.0.1",
-    "docopt": "0.4.0"
+    "docopt": "0.4.0",
+    "lodash": "1.1.1",
+    "js-yaml": "2.0.4"
+  },
+  "devDependencies": {
+    "mocha": "1.8.1",
+    "jshint": "0.9.1"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha -R spec --recursive --timeout 15000 --ignore-leaks"
   }
 }
