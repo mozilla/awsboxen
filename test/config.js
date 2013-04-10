@@ -61,4 +61,14 @@ describe('config loader', function() {
     });
   });
 
+  it('merges config dicts in a sensible way', function(done) {
+    assert.deepEqual(config.mergeConfig({one: 1, two: 2}, {two: null}),
+                     {one: 1});
+    assert.deepEqual(config.mergeConfig({one: 1, two: 2}, "hippopotamus"),
+                     "hippopotamus");
+    assert.deepEqual(config.mergeConfig("rhymenocerous", {one: 1, two: 2}),
+                     {one: 1, two: 2});
+    done();
+  });
+
 });
