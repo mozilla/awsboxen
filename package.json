@@ -18,8 +18,8 @@
     "awssum-amazon": "1.0.2",
     "awssum-amazon-cloudfront": "1.0.1",
     "docopt": "0.4.0",
-    "lodash": "1.1.1",
-    "js-yaml": "2.0.4"
+    "js-yaml": "2.0.4",
+    "async": "0.2.5"
   },
   "devDependencies": {
     "mocha": "1.8.1",
