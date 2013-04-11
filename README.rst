@@ -198,3 +198,21 @@ like this::
         Profiles/
            Production.json
 
+
+Things To Do
+------------
+
+These are the things that don't work yet, in roughly the order I plan to
+attempt working on them:
+
+  * Freezing boxen produced by awsbox.
+  * Injecting configuration into EC2 instances, so they can e.g. find 
+    an appropriate database to connect to at runtime.  Might need cooperation
+    from awsbox.
+  * Tagging stacks with their current deployed version and profile name.
+  * Filtering 'awsboxen list' output by profile name.
+  * Deploying specific refs, rather than just the checked-out version.
+    (I don't want to mess with your working dir, I want to read the data from
+    git directly.  In the meantime, just checkout the desired version before
+    running the command.)
+
