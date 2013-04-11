@@ -206,6 +206,8 @@ These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
   * Freezing boxen produced by awsbox.
+  * Controllable logging/verbosity so that you can get feedback during
+    the execution of various commands.
   * Injecting configuration into EC2 instances, so they can e.g. find 
     an appropriate database to connect to at runtime.  Might need cooperation
     from awsbox.
