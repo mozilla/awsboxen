@@ -64,8 +64,16 @@ for making safe updates to an existing deployment, as described here:
   http://aws.amazon.com/about-aws/whats-new/2011/09/29/aws-cloudformation-new-features-update-stack-and-iam-support/
 
 So this approach allows you to version-control your evolving deployment stack
-right alongside the actual code.  New version adds another type of server?
-No problem, CloudFormation will take care of it.
+right alongside the actual code.  New version adds another type of server,
+opens new network ports, and increases the size of the database?  No problem,
+CloudFormation will take care of it with as little downtime as possible.
+
+
+**awsboxen showconfig [--profile=PROFILE] [<ref>]**
+
+This command will print the CloudFormation configuration as would be sent
+up to AWS, along with the processed list of Boxen definitions.  It's very
+useful for debugging our configuration.
 
 
 **awsboxen list [--profile=PROFILE]**
@@ -115,7 +123,7 @@ description into something like the following::
     {
       // Description automatically generated from repo name.
 
-      "Description": "example-server deployment",
+      "Description": "awsboxen deplpyment of example-server",
 
       // Enumerates the different types of boxen in this deployment.
       // Each entry is an awsbox configuration, which will be frozen into
@@ -124,7 +132,7 @@ description into something like the following::
       // In this case, we have only a single type of box.
 
       "Boxen": {
-        "WebServer": {
+        "DefaultBox": {
           { "processes": [ "server.js "] }
         }
       },
@@ -136,11 +144,11 @@ description into something like the following::
       // In this case we have a single server instance.
 
       "Resources": {
-        "WebHead": {
+        "DefaultBoxServer": {
           "Type": "AWS::EC2::Instance",
           "Properties": {
             "InstanceType": "m1.small",
-            "ImageId": {"Ref": "Boxen::WebServer::ImageId" },
+            "ImageId": { "Ref": "Boxen::DefaultBox" },
           }
         }
       }
@@ -167,7 +175,7 @@ is selected::
           "Type": "AWS::EC2::Instance",
           "Properties": {
             "InstanceType": "m1.small",
-            "ImageId": {"Ref": "Boxen::WebServer::ImageId" },
+            "ImageId": { "Ref": "Boxen::DefaultBox" },
           }
         }
       },
@@ -184,11 +192,15 @@ is selected::
       
     }
 
+The special profile name "Default" will be used if present when no explicit
+profile has been specified on the command-line.
+
+
 The CloudFormation language can be pretty cumbersome, so we offer some handy
-shortcuts.  You can use YAML instead of JSON, and if you specify a file
-instead of a directory then it will be as a dict with keys corresponding to
-child names.  The above example could be produced from a directory structure
-like this::
+shortcuts.  You can use YAML instead of JSON, and if you specify a directory
+instead of a file then it will produce a dict with keys corresponding to
+child file names.  The above example could be produced from a directory
+structure like this::
 
     .awsboxen/
         Description.yaml
@@ -206,6 +218,7 @@ These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
   * Freezing boxen produced by awsbox.
+  * Refering to frozen boxen in the CloudFormation template.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Injecting configuration into EC2 instances, so they can e.g. find 
