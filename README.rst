@@ -91,6 +91,14 @@ This command gets information about a current deployment stack, including:
   * any "outputs" declared in the CloudFormation config
 
 
+**awsboxen freeze [--profile=PROFILE] [<box>...]**
+
+Generate the frozen awsbox AMIs for all declared boxen, or for just the boxen
+named on the command-line.  This may be useful if you want to use awsboxen
+for development, then plug the AMIs into some other system for final production
+deployent.
+
+
 **awsboxen teardown <name>**
 
 This command destroys a deployment stack, deallocating all the corresponding
@@ -217,7 +225,8 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Freezing boxen produced by awsbox.
+  * Labelling frozen boxen with details of the code, and avoiding re-building
+    any if they're already present.
   * Refering to frozen boxen in the CloudFormation template.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
