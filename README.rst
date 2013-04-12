@@ -225,7 +225,7 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Refering to frozen boxen in the CloudFormation template.
+  * The nodejs doesn't start automatically on boot..?
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Injecting configuration into EC2 instances, so they can e.g. find 
