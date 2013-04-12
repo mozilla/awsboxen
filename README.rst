@@ -237,3 +237,4 @@ attempt working on them:
   * Tagging stacks with their current deployed version and profile name.
   * Filtering 'awsboxen list' output by profile name.
   * Handling of production secrets e.g. SSL certs.
+  * Cleaning up of old AMIs, and related snapshots?
