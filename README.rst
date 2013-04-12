@@ -77,10 +77,9 @@ up to AWS, along with the processed list of Boxen definitions.  It's very
 useful for debugging our configuration.
 
 
-**awsboxen list [--profile=PROFILE]**
+**awsboxen list**
 
-This command will list the name of all current deployment stacks.  You can
-optionally filter for just those stacks deployed at a specific profile.
+This command will list the name of all current deployment stacks.
 
 
 **awsboxen info <name>**
@@ -88,8 +87,8 @@ optionally filter for just those stacks deployed at a specific profile.
 This command gets information about a current deployment stack, including:
 
   * status of the stack
-  * git SHA1 and reference tag for the currently deployed version
   * any "outputs" declared in the CloudFormation config
+  * eventually this will report the deployed version of the code
 
 
 **awsboxen freeze [--profile=PROFILE] [<box>...]**
@@ -226,14 +225,15 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
+  * Getting information back out of the stack, e.g. CFN Outputs.
   * The nodejs app doesn't start automatically on boot..?
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
     feedback on what's happening
-  * Getting information back out of the stack, e.g. CFN Outputs.
   * Injecting configuration into EC2 instances, so they can e.g. find 
     an appropriate database to connect to at runtime.  Might need cooperation
     from awsbox.
   * Tagging stacks with their current deployed version and profile name.
   * Filtering 'awsboxen list' output by profile name.
+  * Handling of production secrets e.g. SSL certs.
