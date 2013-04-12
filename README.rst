@@ -225,8 +225,6 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Labelling frozen boxen with details of the code, and avoiding re-building
-    any if they're already present.
   * Refering to frozen boxen in the CloudFormation template.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
