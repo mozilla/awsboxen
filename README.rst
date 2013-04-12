@@ -41,16 +41,15 @@ All deployment managment is done through the "awsboxen" command-line client.
 Here are the major modes of operation:
 
 
-**awsboxen deploy [--profile=PROFILE] <name> [<ref>]**
+**awsboxen deploy [--profile=PROFILE] <name>**
 
 This command lets you deploy a new version of your code into the cloud.  You
-specify an optional deployment profile, a unique name for this particular
-deployment, and an optional git references giving the version of the code
-to deploy.
+specify an optional deployment profile, and a unique name for this particular
+deployment.
 
 This command will:
 
-  * Checkout the appropriate ref and load its .awsboxen.json file.
+  * Parse and load the .awsboxen.json file from the current directory.
   * Find all the declared boxen, and use awsbox to create an AMI for each
     with the appropriate version of the code.
   * Serialize the CloudFormation description and pass it up to AWS to
@@ -69,7 +68,7 @@ opens new network ports, and increases the size of the database?  No problem,
 CloudFormation will take care of it with as little downtime as possible.
 
 
-**awsboxen showconfig [--profile=PROFILE] [<ref>]**
+**awsboxen showconfig [--profile=PROFILE]**
 
 This command will print the CloudFormation configuration as would be sent
 up to AWS, along with the processed list of Boxen definitions.  It's very
@@ -225,16 +224,14 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * The nodejs doesn't start automatically on boot..?
+  * The nodejs app doesn't start automatically on boot..?
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
+  * Try to read the event stream during creation/teardown, for better
+    feedback on what's happening
+  * Getting information back out of the stack, e.g. CFN Outputs.
   * Injecting configuration into EC2 instances, so they can e.g. find 
     an appropriate database to connect to at runtime.  Might need cooperation
     from awsbox.
   * Tagging stacks with their current deployed version and profile name.
   * Filtering 'awsboxen list' output by profile name.
-  * Deploying specific refs, rather than just the checked-out version.
-    (I don't want to mess with your working dir, I want to read the data from
-    git directly.  In the meantime, just checkout the desired version before
-    running the command.)
-
