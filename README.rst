@@ -225,16 +225,14 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Getting information back out of the stack, e.g. CFN Outputs.
-  * The nodejs app doesn't start automatically on boot..?
+  * The nodejs app doesn't start automatically on boot, so the frozen
+    AMIs don't really work very well.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
     feedback on what's happening
-  * Injecting configuration into EC2 instances, so they can e.g. find 
-    an appropriate database to connect to at runtime.  Might need cooperation
-    from awsbox.
+  * Make it easier to inject configuration via cloud-init.  Currently you
+    have to write a user-data script that sets the appropriate config files.
   * Tagging stacks with their current deployed version and profile name.
-  * Filtering 'awsboxen list' output by profile name.
   * Handling of production secrets e.g. SSL certs.
-  * Cleaning up of old AMIs, and related snapshots?
+  * Cleaning up of old AMIs, and related snapshots.
