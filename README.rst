@@ -62,10 +62,12 @@ for making safe updates to an existing deployment, as described here:
 
   http://aws.amazon.com/about-aws/whats-new/2011/09/29/aws-cloudformation-new-features-update-stack-and-iam-support/
 
-So this approach allows you to version-control your evolving deployment stack
+This approach allows you to version-control your evolving deployment stack
 right alongside the actual code.  New version adds another type of server,
 opens new network ports, and increases the size of the database?  No problem,
 CloudFormation will take care of it with as little downtime as possible.
+Want a staged rollout of new instances to your auto-scaling group?  No problem,
+CloudFormation can do that for you.
 
 
 **awsboxen showconfig [--profile=PROFILE]**
