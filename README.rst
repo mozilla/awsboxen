@@ -70,6 +70,14 @@ Want a staged rollout of new instances to your auto-scaling group?  No problem,
 CloudFormation can do that for you.
 
 
+**awsboxen freeze [--profile=PROFILE] [<box>...]**
+
+Generate the frozen awsbox AMIs for all declared boxen, or for just the boxen
+named on the command-line.  This may be useful if you want to use awsboxen
+for development, then plug the AMIs into some other system for final production
+deployent.
+
+
 **awsboxen showconfig [--profile=PROFILE]**
 
 This command will print the CloudFormation configuration as would be sent
@@ -89,14 +97,6 @@ This command gets information about a current deployment stack, including:
   * status of the stack
   * any "outputs" declared in the CloudFormation config
   * eventually this will report the deployed version of the code
-
-
-**awsboxen freeze [--profile=PROFILE] [<box>...]**
-
-Generate the frozen awsbox AMIs for all declared boxen, or for just the boxen
-named on the command-line.  This may be useful if you want to use awsboxen
-for development, then plug the AMIs into some other system for final production
-deployent.
 
 
 **awsboxen teardown <name>**
