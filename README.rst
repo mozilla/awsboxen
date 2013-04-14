@@ -225,14 +225,22 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
+  * Tagging stacks with their current deployed version and profile name.
+    * Define clPparemeters to contain this information, and corresponding
+      Outputs to print it out again.  Easy!
   * The nodejs app doesn't start automatically on boot, so the frozen
     AMIs don't really work very well.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
+  * Add a "deploy --dry-run" command which prints a summary of the changes
+    that will be made, and highlights any potential downtime or destruction
+    of existing resources.
   * Try to read the event stream during creation/teardown, for better
     feedback on what's happening
   * Make it easier to inject configuration via cloud-init.  Currently you
     have to write a user-data script that sets the appropriate config files.
-  * Tagging stacks with their current deployed version and profile name.
+    * Idea: a "Plumbing" section in the config, where you can specify
+      json files to write into the AMI.  We translate it into cloud-init
+      commands during pre-processing.
   * Handling of production secrets e.g. SSL certs.
   * Cleaning up of old AMIs, and related snapshots.
