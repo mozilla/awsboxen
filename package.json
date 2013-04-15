@@ -13,7 +13,7 @@
     "awsboxen": "./lib/awsboxen.js"
   },
   "dependencies": {
-    "awsbox": "0.4.2",
+    "awsbox": "0.4.4",
     "awssum": "1.0.0-beta",
     "awssum-amazon": "1.0.2",
     "awssum-amazon-cloudformation": "1.0.0",
