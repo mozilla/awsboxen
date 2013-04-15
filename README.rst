@@ -244,3 +244,5 @@ attempt working on them:
       commands during pre-processing.
   * Handling of production secrets e.g. SSL certs.
   * Cleaning up of old AMIs, and related snapshots.
+  * If "awsboxen deplopy" is interrupted, rollback the in-progress deployment.
+    A good idea, or a terrible one?
