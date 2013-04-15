@@ -228,8 +228,6 @@ attempt working on them:
   * Tagging stacks with their current deployed version and profile name.
     * Define clPparemeters to contain this information, and corresponding
       Outputs to print it out again.  Easy!
-  * The nodejs app doesn't start automatically on boot, so the frozen
-    AMIs don't really work very well.
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Add a "deploy --dry-run" command which prints a summary of the changes
