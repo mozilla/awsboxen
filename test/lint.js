@@ -3,13 +3,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /*
- * Automatically run jshint over the source files for this project.
+ * Automatically run various linty checks over the project source files.
+ * Current checks include:
+ *
+ *    - jshint, with customizable options
+ *    - checking for MPL license headers
  *
  */
 
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const async = require('async');
 
 const jshint = require('jshint/lib/hint').hint;
 
@@ -38,21 +43,36 @@ function findJSFiles(pathName) {
 
 
 // Find the .jshintrc file most closely placed to the given .js file.
-// XXX TODO: most files will arrive at the same .jshint file for this,
-//           it would be good to to repeat the same search over and over.
+// Does some simple caching because many .js files will likely share
+// the same .jshintrc file.
 //
 function findJSHintRCFile(pathName) {
   var dir = path.dirname(pathName);
-  var parent = path.resolve(dir, '..');
-  var jsHintRCFile = path.join(dir, '.jshintrc');
-  while (dir !== parent) {
-    if (fs.existsSync(jsHintRCFile)) return jsHintRCFile;
-    dir = path.dirname(dir);
-    parent = path.resolve(dir, '..');
-    jsHintRCFile = path.join(dir, '.jshintrc');
+  // Have we already found the .jshintrc file for that directory?
+  if (findJSHintRCFile.cache[dir]) {
+    return findJSHintRCFile.cache[dir];
   }
+  // Have we reached the root directory?
+  var parent = path.resolve(dir, '..');
+  if (dir === parent) {
+    return null;
+  }
+  // See if one exists in this directory.
+  var jsHintRCFile = path.join(dir, '.jshintrc');
+  if (fs.existsSync(jsHintRCFile)) {
+    findJSHintRCFile.cache[dir] = jsHintRCFile;
+    return jsHintRCFile;
+  }
+  // Recurse if it wasn't found.
+  jsHintRCFile = findJSHintRCFile(dir);
+  if (jsHintRCFile) {
+    findJSHintRCFile.cache[dir] = jsHintRCFile;
+    return jsHintRCFile;
+  }
+  // Whelp, looks like there's nothing to be found.
   return null;
 }
+findJSHintRCFile.cache = {};
 
 
 // Run jshint on a particular path, returning an array of errors for
@@ -77,12 +97,30 @@ function jshintExaminePath(pathName) {
 }
 
 
-describe('jshint source checks', function() {
+describe('linty source checks', function() {
 
-  it('should report no warnings for our source files', function(done) {
+  it('jshint should report no warnings for our source files', function(done) {
     var errors = jshintExaminePath(path.dirname(__dirname));
     assert.deepEqual(errors, []);
     done();
+  });
+
+  it('all source files should have the MPL license header', function(done) {
+    var licenseText = 'subject to the terms of the Mozilla Public';
+    var jsFiles = findJSFiles(path.dirname(__dirname));
+    async.eachSeries(jsFiles, function(jsFilePath, cb) {
+      var jsLines = fs.readFileSync(jsFilePath).toString().split('\n');
+      if (jsLines[0].indexOf('#!') === 0) {
+        jsLines.shift();
+      }
+      if (jsLines[0].indexOf(licenseText) === -1) {
+        assert.fail('missing MPL license header: ' + jsFilePath);
+      }
+      cb();
+    }, function(err) {
+      assert.equal(err, null);
+      done();
+    });
   });
 
 });
