@@ -6,9 +6,9 @@
   "license": "MPL 2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rfk/awsboxen.git"
+    "url": "https://github.com/mozilla/awsboxen"
   },
-  "main": "./lib/index.js",
+  "main": "./lib/awsboxen.js",
   "bin": {
     "awsboxen": "./lib/awsboxen.js"
   },
