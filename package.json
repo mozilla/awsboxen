@@ -14,10 +14,8 @@
   },
   "dependencies": {
     "awsbox": "0.4.4",
-    "awssum": "1.0.0-beta",
-    "awssum-amazon": "1.0.2",
-    "awssum-amazon-cloudformation": "1.0.0",
-    "awssum-amazon-ec2": "1.0.0",
+    "awssum-amazon-cloudformation": "1.0.x",
+    "awssum-amazon-ec2": "1.0.x",
     "docopt": "0.4.0",
     "js-yaml": "2.0.4",
     "async": "0.2.5",
