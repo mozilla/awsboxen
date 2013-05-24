@@ -1,0 +1,9 @@
+{
+  "processes": [
+    "nonexistent.js"
+  ],
+  "env": {
+    "README": "this only exists for testing purposes",
+    "README2": "don't actually try to deploy it for anything"
+  }
+}

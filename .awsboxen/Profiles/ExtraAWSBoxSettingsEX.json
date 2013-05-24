@@ -1,0 +1,11 @@
+{
+  "Boxen": {
+    "AWSBox": {
+      "Type": "AWSBox",
+      "Properties": {
+        "processes": [ "somethingelse.js" ],
+        "hooks": [ "nonexistent.sh" ]
+      }
+    }
+  }
+}

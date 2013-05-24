@@ -1,0 +1,4 @@
+{
+  "processes": [ "somethingelse.js" ],
+  "hooks": [ "nonexistent.sh" ]
+}
