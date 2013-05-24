@@ -131,7 +131,7 @@ description into something like the following::
     {
       // Description automatically generated from repo name.
 
-      "Description": "awsboxen deplpyment of example-server",
+      "Description": "awsboxen deployment of example-server",
 
       // Enumerates the different types of boxen in this deployment.
       // Each entry is an awsbox configuration, which will be frozen into
@@ -219,12 +219,43 @@ structure like this::
            Production.json
 
 
+To build custom AMIs that do not include all of the software installed
+on awsbox by default, you can specify an explicit box type.  This example
+includes one AMI build with awsbox and one built using a custom build
+script::
+
+    {
+      "Boxen": {
+        "WebHead": {
+          // Boxen are assumed to be of type "AWSBox" by default
+          // Their properties hash is the awsbox config.
+          "Type": "AWSBox",
+          "Properties": { "processes": [ "server.js "] }
+        },
+        "StorageNode" : {
+          // This box will be built from a base AMI, using a custom script.
+          // Script it located relative to top-level project directory.
+          "Type":  "AWSBoxen::BuildScript",
+          "Properties": {
+            "BaseAMI": "ami-XXXXXX",
+            "BuildScript": "scripts/build_storage_node.sh"
+          }
+      },
+    }
+
+Currently only "AWSBox" and "AWSBoxen::BuildScript" types are supported.
+Additional build mechanisms (e.g. puppet or chef) may be supported in the
+future.
+
+
+
 Things To Do
 ------------
 
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
+  * set snapshot names to match AMI names, for easy cleanup
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Add a "deploy --dry-run" command which prints a summary of the changes
