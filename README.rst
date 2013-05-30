@@ -255,6 +255,8 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
+  * refuse to run with uncomitted changes, since they likely won't
+    be propagated correctly.
   * set snapshot names to match AMI names, for easy cleanup
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
