@@ -140,25 +140,33 @@ description into something like the following::
       // In this case, we have only a single type of box.
 
       "Boxen": {
-        "DefaultBox": {
-          { "processes": [ "server.js "] }
+        "AWSBox": {
+          "Type": "AWSBox",
+          "Properties": { "processes": [ "server.js "] }
         }
       },
 
-      // Enumerates the physical resources that make up the deployent.
+      // Enumerates the physical resources that make up the deployment.
       // This might include a load balancer, a database instance, and some
       // EC2 instances running boxen that were defined above.
       //
-      // In this case we have a single server instance.
+      // In the default configuration, we get a single server instance and
+      // a supporting security group.
 
       "Resources": {
-        "DefaultBoxServer": {
+
+        "AWSBoxServer": {
           "Type": "AWS::EC2::Instance",
           "Properties": {
             "InstanceType": "m1.small",
-            "ImageId": { "Ref": "Boxen::DefaultBox" },
+            "ImageId": { "Ref": "AWSBoxAMI" },
           }
+        },
+
+        "AWSBoxSecurityGroup": {
+            ...security group guff elided...
         }
+
       }
 
     }
@@ -183,7 +191,7 @@ is selected::
           "Type": "AWS::EC2::Instance",
           "Properties": {
             "InstanceType": "m1.small",
-            "ImageId": { "Ref": "Boxen::DefaultBox" },
+            "ImageId": { "Ref": "WebHeadAMI" },
           }
         }
       },
@@ -234,7 +242,7 @@ script::
         },
         "StorageNode" : {
           // This box will be built from a base AMI, using a custom script.
-          // Script it located relative to top-level project directory.
+          // Script is located relative to root of project git repo.
           "Type":  "AWSBoxen::BuildScript",
           "Properties": {
             "BaseAMI": "ami-XXXXXX",
@@ -260,11 +268,11 @@ attempt working on them:
   * set snapshot names to match AMI names, for easy cleanup
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
+  * Try to read the event stream during creation/teardown, for better
+    feedback on what's happening
   * Add a "deploy --dry-run" command which prints a summary of the changes
     that will be made, and highlights any potential downtime or destruction
     of existing resources.
-  * Try to read the event stream during creation/teardown, for better
-    feedback on what's happening
   * Make it easier to inject configuration via cloud-init.  Currently you
     have to write a user-data script that sets the appropriate config files.
     * Idea: a "Plumbing" section in the config, where you can specify
