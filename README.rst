@@ -41,7 +41,7 @@ All deployment managment is done through the "awsboxen" command-line client.
 Here are the major modes of operation:
 
 
-**awsboxen deploy [--profile=PROFILE] <name>**
+**awsboxen deploy [--profile=PROFILE] [--define=PARAM=VALUE,...] <name>**
 
 This command lets you deploy a new version of your code into the cloud.  You
 specify an optional deployment profile, and a unique name for this particular
