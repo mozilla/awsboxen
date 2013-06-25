@@ -1,0 +1,6 @@
+PENDING
+=======
+
+* Allow '-D param=value' syntax for defining template parameter values.
+* Read 'awsboxen.json' in addition to '.awsboxen.json'.
+
