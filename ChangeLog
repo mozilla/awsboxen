@@ -1,5 +1,5 @@
-PENDING
-=======
+0.3.0 - 2013-06-25
+==================
 
 * Allow '-D param=value' syntax for defining template parameter values.
 * Read 'awsboxen.json' in addition to '.awsboxen.json'.
