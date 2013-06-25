@@ -3,4 +3,5 @@ PENDING
 
 * Allow '-D param=value' syntax for defining template parameter values.
 * Read 'awsboxen.json' in addition to '.awsboxen.json'.
+* Refuse to run if there are uncommitted changs; --ignore-uncommitted to force.
 

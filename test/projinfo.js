@@ -24,7 +24,8 @@ var TOP_LEVEL_KEYS = ["AWSTemplateFormatVersion", "Boxen", "Description",
 describe('projinfo loader', function() {
 
   it('loads a .awsbox.json file into a default config', function(done) {
-    projinfo(PROJDIR, null).loadConfig(function(err, cfg) {
+    var pi = projinfo(PROJDIR, null, true);
+    pi.loadConfig(function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -38,7 +39,8 @@ describe('projinfo loader', function() {
   });
 
   it('merges profile AWSBox settings from top-level keys', function(done) {
-    projinfo(PROJDIR, 'ExtraAWSBoxSettingsTL').loadConfig(function(err, cfg) {
+    var pi = projinfo(PROJDIR, 'ExtraAWSBoxSettingsTL', true);
+    pi.loadConfig(function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -53,7 +55,8 @@ describe('projinfo loader', function() {
   });
 
   it('merges profile AWSBox settings from explicit decl', function(done) {
-    projinfo(PROJDIR, 'ExtraAWSBoxSettingsEX').loadConfig(function(err, cfg) {
+    var pi = projinfo(PROJDIR, 'ExtraAWSBoxSettingsEX', true);
+    pi.loadConfig(function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -68,7 +71,8 @@ describe('projinfo loader', function() {
   });
 
   it('allows a profile to remove the default AWSBox boxen', function(done) {
-    projinfo(PROJDIR, 'RemoveDefaultBoxen').loadConfig(function(err, cfg) {
+    var pi = projinfo(PROJDIR, 'RemoveDefaultBoxen', true);
+    pi.loadConfig(function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), []);
