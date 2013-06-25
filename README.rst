@@ -263,7 +263,6 @@ Things To Do
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * set snapshot names to match AMI names, for easy cleanup
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
@@ -278,5 +277,3 @@ attempt working on them:
       commands during pre-processing.
   * Handling of production secrets e.g. SSL certs.
   * Cleaning up of old AMIs, and related snapshots.
-  * If "awsboxen deplopy" is interrupted, rollback the in-progress deployment.
-    A good idea, or a terrible one?
