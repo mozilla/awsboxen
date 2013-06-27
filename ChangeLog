@@ -1,3 +1,10 @@
+PENDING
+=======
+
+* Tweak how .awsbox.json declarations are upgraded in a Boxen, making it
+  possible to disable this feature by setting Boxen.AWSBox = null;
+
+
 0.3.0 - 2013-06-25
 ==================
 

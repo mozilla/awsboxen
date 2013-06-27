@@ -16,7 +16,6 @@ const projinfo = require('../lib/projinfo');
 
 
 var PROJDIR = path.resolve(__dirname, '..');
-console.log(PROJDIR);
 
 var TOP_LEVEL_KEYS = ["AWSTemplateFormatVersion", "Boxen", "Description", 
                       "Outputs", "Parameters", "Resources"];
