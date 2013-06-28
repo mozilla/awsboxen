@@ -12,7 +12,7 @@
 const assert = require('assert');
 const path = require('path');
 
-const projinfo = require('../lib/projinfo');
+const loadTemplate = require('../lib/loadTemplate');
 
 
 var PROJDIR = path.resolve(__dirname, '..');
@@ -20,11 +20,12 @@ var PROJDIR = path.resolve(__dirname, '..');
 var TOP_LEVEL_KEYS = ["AWSTemplateFormatVersion", "Boxen", "Description", 
                       "Outputs", "Parameters", "Resources"];
 
-describe('projinfo loader', function() {
+
+describe('template loader', function() {
 
   it('loads a .awsbox.json file into a default config', function(done) {
-    var pi = projinfo(PROJDIR, null, true);
-    pi.loadConfig(function(err, cfg) {
+    var opts = { ignore_uncommitted: true };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -38,8 +39,8 @@ describe('projinfo loader', function() {
   });
 
   it('merges profile AWSBox settings from top-level keys', function(done) {
-    var pi = projinfo(PROJDIR, 'ExtraAWSBoxSettingsTL', true);
-    pi.loadConfig(function(err, cfg) {
+    var opts = { ignore_uncommitted: true, profile: 'ExtraAWSBoxSettingsTL' };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -54,8 +55,8 @@ describe('projinfo loader', function() {
   });
 
   it('merges profile AWSBox settings from explicit decl', function(done) {
-    var pi = projinfo(PROJDIR, 'ExtraAWSBoxSettingsEX', true);
-    pi.loadConfig(function(err, cfg) {
+    var opts = { ignore_uncommitted: true, profile: 'ExtraAWSBoxSettingsEX' };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -70,8 +71,8 @@ describe('projinfo loader', function() {
   });
 
   it('allows a profile to remove the default AWSBox boxen', function(done) {
-    var pi = projinfo(PROJDIR, 'RemoveDefaultBoxen', true);
-    pi.loadConfig(function(err, cfg) {
+    var opts = { ignore_uncommitted: true, profile: 'RemoveDefaultBoxen' };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), []);
@@ -80,8 +81,8 @@ describe('projinfo loader', function() {
   });
 
   it('pre-processes to apply UserDataFiles template function', function(done) {
-    var pi = projinfo(PROJDIR, 'FnUserDataFiles', true);
-    pi.loadConfig(function(err, cfg) {
+    var opts = { ignore_uncommitted: true, profile: 'FnUserDataFiles' };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(cfg.Resources.AWSBox.Properties.UserData, {
         "Fn::Base64": { "Fn::Join" : [ "\n", [
