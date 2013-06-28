@@ -8,9 +8,11 @@ PENDING
     will write those files at startup.
 * Rename "lib/projinfo.js" to "lib/loadTemplate.js", since that's really
   the only thing that it does.
+* Resolve uses of {'Ref'} and {'Fn::FindInMap'} in Boxen declarations.
+  This is helpful if you need to use a different AMI in different regions.
+* Allow specifying --aws-id, --aws-secret and --aws-region on the command line.
 * Tweak how .awsbox.json declarations are upgraded into a Boxen, making it
   possible to disable this feature by setting Boxen.AWSBox = null;
-* Allow specifying --aws-id, --aws-secret and --aws-region on the command line.
 
 
 0.3.0 - 2013-06-25
