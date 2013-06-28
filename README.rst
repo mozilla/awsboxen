@@ -106,6 +106,18 @@ AWS resources.  It's very highly descructive and cannot be undone, so due
 care should be taken!
 
 
+AWS Access Credentials
+----------------------
+
+To access CloudFormation you will need to specify an AWS access key id and
+matching secret key.  These can be provided in the command-line with the
+`--aws-id` and `--aws-secret` options, or in the environment variables
+`$AWS_ID` and `$AWS_SECRET`.
+
+The deployment region can also be specified with either `--aws-region` or
+`$AWS_REGION`.  It defaults to us-east-1.
+
+
 Describing a Deployment
 -----------------------
 

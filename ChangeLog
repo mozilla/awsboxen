@@ -1,13 +1,14 @@
 PENDING
 =======
 
-* Tweak how .awsbox.json declarations are upgraded in a Boxen, making it
-  possible to disable this feature by setting Boxen.AWSBox = null;
 * Add the notion of awsboxen-provided pre-processing functions, using
   syntax { "Fn::AWSBoxen::<funcname>" : <args> }.
   * The first function is "UserDataFiles", which turns a JSON description
     of that config files to write into a CloudInit UserData script that
     will write those files at startup.
+* Tweak how .awsbox.json declarations are upgraded into a Boxen, making it
+  possible to disable this feature by setting Boxen.AWSBox = null;
+* Allow specifying --aws-id, --aws-secret and --aws-region on the command line.
 
 
 0.3.0 - 2013-06-25
