@@ -1,5 +1,5 @@
-PENDING
-=======
+0.4.0 - 2013-07-01
+==================
 
 * Rename "lib/projinfo.js" to "lib/loadTemplate.js", since that's really
   the only thing that it does.
