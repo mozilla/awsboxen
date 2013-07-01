@@ -80,25 +80,4 @@ describe('template loader', function() {
     });
   });
 
-  it('pre-processes to apply UserDataFiles template function', function(done) {
-    var opts = { ignore_uncommitted: true, profile: 'FnUserDataFiles' };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
-      assert.equal(err, null);
-      assert.deepEqual(cfg.Resources.AWSBox.Properties.UserData, {
-        "Fn::Base64": { "Fn::Join" : [ "\n", [
-          "#!/bin/bash",
-          "set -e -x",
-          "cat << EOF_MARKER > /path/to/file.json",
-          '{"config":"data","goes":"here"}',
-          "EOF_MARKER",
-          "cat << EOF_MARKER > /config/files/can",
-          {"Fn::Join": [ "", [
-            '{"reference":"', { "Ref": "TemplateParameters" }, '"}'
-          ]]},
-          "EOF_MARKER"
-      ]]}});
-      done();
-    });
-  });
-
 });

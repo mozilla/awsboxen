@@ -268,75 +268,12 @@ Additional build mechanisms (e.g. puppet or chef) may be supported in the
 future.
 
 
-Instance Configuration
-----------------------
-
-Run-time configuration of AWS instances is typically done using cloud-init,
-by passing instructions into the "UserData" property of the instance like
-so:
-
-    {
-      "Resources": {
-        "WebHead": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-            "InstanceType": "m1.small",
-            "ImageId": { "Ref": "WebHeadAMI" },
-            "UserData": {"Fn::Base64": "<cloud-init script here>" }
-          }
-        }
-      }
-    }
-
-
-Unfortunately this can get pretty messy when you try to write a complicated
-cloud-init script inside a JSON document.  AWSBoxen provides a helper function
-called "UserDataFiles" that can simplify the creation of config files:
-
-    {
-      "Resources": {
-        "WebHead": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-            "InstanceType": "m1.small",
-            "ImageId": { "Ref": "WebHeadAMI" },
-            "UserData": {"Fn::AWSBoxen::UserDataFiles": {
-
-                # Each key in this object names a config file, with each
-                # value being data to write into that file at startup.
-
-                "/path/to/config/file.txt":  "contents of file",
-
-                # JSON object are automatically serialized, and can include
-                # references to template resources such as the hostname of
-                # your database server.
-
-                "/path/to/config/file.json": {
-                    "database": {
-                      "host": {"Fn::GetAtt": ["Database", "Endpoint.Address"]}
-                      "port": {"Fn::GetAtt": ["Database", "Endpoint.Port"]}
-                    }
-                }
-            }}
-          }
-        }
-      }
-    }
-
-
-The "UserDataFiles" function is applied in a pre-processing step and produces
-a standard cloud-init script that creates the necessary files.
-
-
 Things To Do
 ------------
 
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Refactor projinfo.js to split up helper functions from the main module
-     * maybe also re-name it to something specific to template loading,
-      like "template".
   * Reading of parameters from a file; also from an encrypted file.
      * this seems like a nice way to handle secrets
   * Controllable logging/verbosity so that you can get feedback during
