@@ -80,4 +80,24 @@ describe('template loader', function() {
     });
   });
 
+  it('resolves params and function calls in boxen definitions', function(done) {
+    var opts = {
+      ignore_uncommitted: true,
+      profile: 'ParameterizedBoxen',
+      aws_region: 'us-east-1',
+    };
+    loadTemplate(PROJDIR, opts, function(err, cfg) {
+      assert.equal(err, null);
+      assert.equal(cfg.Boxen.TestRegionMap.Properties.BaseAMI, "ami-EAST");
+      assert.equal(cfg.Boxen.TestParam.Properties.BaseAMI, "DefaultValue");
+      opts.aws_region = 'us-west-1';
+      opts.define = {'UserParam1': 'UserValue'};
+      loadTemplate(PROJDIR, opts, function(err, cfg) {
+        assert.equal(cfg.Boxen.TestRegionMap.Properties.BaseAMI, "ami-WEST");
+        assert.equal(cfg.Boxen.TestParam.Properties.BaseAMI, "UserValue");
+        done();
+      });
+    });
+  });
+
 });
