@@ -1,0 +1,34 @@
+{
+  "Parameters": {
+    "UserParam1": {
+      "Type": "String",
+      "Default": "DefaultValue"
+    }
+  },
+
+  "Mappings": {
+    "RegionMap": {
+      "us-east-1": {
+        "BaseAMI": "ami-EAST"
+      },
+      "us-west-1": {
+        "BaseAMI": "ami-WEST"
+      }
+    }
+  },
+
+  "Boxen": {
+    "TestRegionMap": {
+      "Type": "AWSBoxen::BuildScript",
+      "Properties": {
+        "BaseAMI": {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, "BaseAMI"]}
+      }
+    },
+    "TestParam": {
+      "Type": "AWSBoxen::BuildScript",
+      "Properties": {
+        "BaseAMI": {"Ref": "UserParam1"}
+      }
+    }
+  }
+}
