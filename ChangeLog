@@ -1,6 +1,9 @@
 PENDING
 =======
 
+* Implement loading of template parameters from files, including optional
+  on-the-fly decryption via gpg.
+
 
 0.4.0 - 2013-07-01
 ==================
