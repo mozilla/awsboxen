@@ -268,14 +268,76 @@ Additional build mechanisms (e.g. puppet or chef) may be supported in the
 future.
 
 
+Handling Secrets
+----------------
+
+Rather than putting secrets (e.g. database passwords) directly in the
+cloudformation template, you should define them as parameters and specify
+them on the command-line at deployment time.  For example, here is how an
+RDS database instance might be declared with its password as a parameter::
+
+    {
+      "Parameters": {
+        "DBPassword": {
+          "Default": "plaintext_decoy_password",
+          "Type": "String",
+          "Description": "password to use for database access"
+        }
+      },
+
+      "Resources": {
+        "Database": {
+          "Type" : "AWS::RDS::DBInstance",
+          "Properties" : {
+            "DBName": "mydatabase",
+            "Engine": "MySQL",
+            "MasterUsername": "myuser",
+            "MasterUserPassword": {"Ref": "DBPassword"},
+            "DBInstanceClass": "db.m1.small",
+            "AllocatedStorage": "5"
+          }
+        }
+      }
+    }
+
+
+At deployment time, the value of the password can be provided on the
+command-line like so::
+
+    $> awsboxen deploy -D DBPassword=MySecretPassword stack-name
+
+
+If the number of parameters grows large, you can store them in a JSON-formatted
+file for eash loading like so::
+
+    $> echo '{"DBPassword": "MySecretPassword"}' > params.json
+    $> 
+    $> awsboxen deploy -F params.json stack-name
+    [...deployment commences...]
+    
+
+You can even encrypt the file using gpg, and awsboxen will decrypt it on the
+fly when deploying your stack, shelling out to gpg to prompt for the necessary
+password::
+
+    $> gpg --cipher-algo=aes256 --symmetric --armor params.json
+    Enter passphrase:  ********
+    Repeat passphrase:  ********
+    $> 
+    $> awsboxen deploy -F params.json.asc stack-name
+    gpg: AES256 encrypted data
+    Enter passphrase: ********
+    gpg: encrypted with 1 passphrase
+    [...deployment commences...]
+
+
+
 Things To Do
 ------------
 
 These are the things that don't work yet, in roughly the order I plan to
 attempt working on them:
 
-  * Reading of parameters from a file; also from an encrypted file.
-     * this seems like a nice way to handle secrets
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
