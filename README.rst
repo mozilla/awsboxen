@@ -342,6 +342,8 @@ attempt working on them:
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
     feedback on what's happening
+  * Allow pointing to a custom awsboxen.json file, rather than always
+    ready it out of the current directory.
   * Add a "deploy --dry-run" command which prints a summary of the changes
     that will be made, and highlights any potential downtime or destruction
     of existing resources.
