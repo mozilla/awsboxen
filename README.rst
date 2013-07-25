@@ -344,6 +344,9 @@ attempt working on them:
     feedback on what's happening
   * Allow pointing to a custom awsboxen.json file, rather than always
     ready it out of the current directory.
+  * `awsboxen info <stack-name> <resource-name>` to get information
+    about particular resources in the stack.  May be useful for e.g.
+    listing all the instances in an auto-scale group.
   * Add a "deploy --dry-run" command which prints a summary of the changes
     that will be made, and highlights any potential downtime or destruction
     of existing resources.
