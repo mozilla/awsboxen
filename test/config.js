@@ -72,7 +72,7 @@ describe('config loader', function() {
 
   it('merges config dicts in a sensible way', function(done) {
     assert.deepEqual(config.mergeConfig({one: 1, two: 2}, {two: null}),
-                     {one: 1});
+                     {one: 1, two: null});
     assert.deepEqual(config.mergeConfig({one: 1, two: 2}, "hippopotamus"),
                      "hippopotamus");
     assert.deepEqual(config.mergeConfig("rhymenocerous", {one: 1, two: 2}),
