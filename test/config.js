@@ -58,8 +58,24 @@ describe('config loader', function() {
     });
   });
 
-  it('can merge several configs to give a root config', function(done) {
-    config.loadRootConfig(testDataPath(''), 'simple', function(err, res) {
+  it('can merge several configs into a root config', function(done) {
+    config.loadRootConfig(testDataPath(''), ['simple'], function(err, res) {
+      assert.equal(err, null);
+      assert.deepEqual(res, {
+        one: 1,
+        map: { key: 'value' },
+        items: [ 'one', 'two', 'three' ]
+      });
+      done();
+    });
+  });
+
+  it('can merge an explicit list of files into a root config', function(done) {
+    var configPaths = [
+      testDataPath('simple.json'),
+      testDataPath('simple.yml')
+    ];
+    config.loadRootConfig(configPaths, function(err, res) {
       assert.equal(err, null);
       assert.deepEqual(res, {
         one: 1,

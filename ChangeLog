@@ -1,6 +1,8 @@
 PENDING
 =======
 
+* Use "--config=FILE" to specify a particular awsboxen config to use,
+  overriding the defaul .awsboxen.json and friends.
 * Implement loading of template parameters from files, including optional
   on-the-fly decryption via gpg.
 
