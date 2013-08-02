@@ -342,8 +342,6 @@ attempt working on them:
     the execution of various commands.
   * Try to read the event stream during creation/teardown, for better
     feedback on what's happening
-  * Allow pointing to a custom awsboxen.json file, rather than always
-    ready it out of the current directory.
   * `awsboxen info <stack-name> <resource-name>` to get information
     about particular resources in the stack.  May be useful for e.g.
     listing all the instances in an auto-scale group.
