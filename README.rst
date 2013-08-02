@@ -345,6 +345,9 @@ attempt working on them:
   * `awsboxen info <stack-name> <resource-name>` to get information
     about particular resources in the stack.  May be useful for e.g.
     listing all the instances in an auto-scale group.
+  * avoid re-building AMIs when they haven't actually changed; for example
+    we could identify BuildScript AMIs by the hash of their build script
+    rather than the hash of the entire git repo.
   * Add a "deploy --dry-run" command which prints a summary of the changes
     that will be made, and highlights any potential downtime or destruction
     of existing resources.
