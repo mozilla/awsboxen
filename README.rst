@@ -340,8 +340,6 @@ attempt working on them:
 
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
-  * Try to read the event stream during creation/teardown, for better
-    feedback on what's happening
   * `awsboxen info <stack-name> <resource-name>` to get information
     about particular resources in the stack.  May be useful for e.g.
     listing all the instances in an auto-scale group.
