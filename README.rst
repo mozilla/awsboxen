@@ -90,13 +90,18 @@ useful for debugging our configuration.
 This command will list the name of all current deployment stacks.
 
 
-**awsboxen info <name>**
+**awsboxen info <stack-name> [<resource-name>]**
 
-This command gets information about a current deployment stack, including:
+With one argument, this command gets information about a current deployment
+stack, including:
 
   * status of the stack
   * any "outputs" declared in the CloudFormation config
   * eventually this will report the deployed version of the code
+
+With two arguments, this command gets information about a particular resource
+within a stack.  Typically this would include its id status, public dns name,
+and other type-specific information that may be useful.
 
 
 **awsboxen teardown <name>**

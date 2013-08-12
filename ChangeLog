@@ -8,6 +8,8 @@ PENDING
 * Print stack events to the console while waiting for it to deploy.  This
   gives a much better picture of its progress, and also earlier information
   on any errors that occur.
+* Add "awsboxen info <stack-name> <resource-name>" to get more detailed info
+  on a particular stack resource.
 
 
 0.4.0 - 2013-07-01
