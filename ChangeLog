@@ -1,5 +1,5 @@
-PENDING
-=======
+0.5.0 - 2013-08-12
+==================
 
 * Use "--config=FILE" to specify a particular awsboxen config to use,
   overriding the defaul .awsboxen.json and friends.
