@@ -4,6 +4,8 @@ PENDING
 * Let BuildScript Boxen specify multiple scripts to run, by giving the list
   in "BuildScripts" property.  This makes it easier to share common logic
   between different Boxen.
+* Only rebuild BuildScript-based AMIs when the actual script has changed, not
+  when some other random part of the repo has changed.
 
 
 0.5.0 - 2013-08-12
