@@ -12,7 +12,7 @@
 const assert = require('assert');
 const path = require('path');
 
-const loadTemplate = require('../lib/loadTemplate');
+const template = require('../lib/template');
 
 
 var PROJDIR = path.resolve(__dirname, '..');
@@ -25,7 +25,7 @@ describe('template loader', function() {
 
   it('loads a .awsbox.json file into a default config', function(done) {
     var opts = { ignore_uncommitted: true };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
+    template.loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -40,7 +40,7 @@ describe('template loader', function() {
 
   it('merges profile AWSBox settings from top-level keys', function(done) {
     var opts = { ignore_uncommitted: true, profile: 'ExtraAWSBoxSettingsTL' };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
+    template.loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -56,7 +56,7 @@ describe('template loader', function() {
 
   it('merges profile AWSBox settings from explicit decl', function(done) {
     var opts = { ignore_uncommitted: true, profile: 'ExtraAWSBoxSettingsEX' };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
+    template.loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), ['AWSBox']);
@@ -72,7 +72,7 @@ describe('template loader', function() {
 
   it('allows a profile to remove the default AWSBox boxen', function(done) {
     var opts = { ignore_uncommitted: true, profile: 'RemoveDefaultBoxen' };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
+    template.loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.deepEqual(Object.keys(cfg).sort(), TOP_LEVEL_KEYS);
       assert.deepEqual(Object.keys(cfg.Boxen), []);
@@ -86,13 +86,13 @@ describe('template loader', function() {
       profile: 'ParameterizedBoxen',
       aws_region: 'us-east-1',
     };
-    loadTemplate(PROJDIR, opts, function(err, cfg) {
+    template.loadTemplate(PROJDIR, opts, function(err, cfg) {
       assert.equal(err, null);
       assert.equal(cfg.Boxen.TestRegionMap.Properties.BaseAMI, "ami-EAST");
       assert.equal(cfg.Boxen.TestParam.Properties.BaseAMI, "DefaultValue");
       opts.aws_region = 'us-west-1';
       opts.define = {'UserParam1': 'UserValue'};
-      loadTemplate(PROJDIR, opts, function(err, cfg) {
+      template.loadTemplate(PROJDIR, opts, function(err, cfg) {
         assert.equal(cfg.Boxen.TestRegionMap.Properties.BaseAMI, "ami-WEST");
         assert.equal(cfg.Boxen.TestParam.Properties.BaseAMI, "UserValue");
         done();

@@ -6,6 +6,9 @@ PENDING
   between different Boxen.
 * Only rebuild BuildScript-based AMIs when the actual script has changed, not
   when some other random part of the repo has changed.
+* Let BuildScript Boxen refer to template parameters in their build scripts.
+  This is convenience but should be used sparingly, as it means you have to
+  build a separate AMI whenever those params change.
 
 
 0.5.0 - 2013-08-12
