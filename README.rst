@@ -85,6 +85,12 @@ up to AWS, along with the processed list of Boxen definitions.  It's very
 useful for debugging our configuration.
 
 
+**awsboxen validate [--profile=PROFILE]**
+
+This command will build the CloudFormation configuration and send it to the
+AWS servers for validation.  Any validation errors are logged to the console.
+
+
 **awsboxen list**
 
 This command will list the name of all current deployment stacks.
