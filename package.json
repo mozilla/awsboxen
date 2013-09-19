@@ -2,7 +2,7 @@
   "author": "Ryan Kelly <rfkelly@mozilla.com>",
   "name": "awsboxen",
   "description": "Deploying and Scaling NodeJS apps on AWS",
-  "version": "0.5.1-dev",
+  "version": "0.5.1",
   "license": "MPL 2.0",
   "repository": {
     "type": "git",

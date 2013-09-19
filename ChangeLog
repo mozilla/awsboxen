@@ -1,5 +1,5 @@
-PENDING
-=======
+0.5.1 - 2013-09-19
+==================
 
 * Let BuildScript Boxen specify multiple scripts to run, by giving the list
   in "BuildScripts" property.  This makes it easier to share common logic
