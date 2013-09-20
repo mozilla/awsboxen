@@ -1,37 +1,211 @@
-Deploy and Scale NodeJS Applications in AWS
-===========================================
+AWSBoxen: Quick, Easy, Scalable Deployments atop AWS
+====================================================
 
-This is an experiment in automating deployment and scaling of NodeJS
-applications.  It lets you declare the structure of your deployment right
-next to your app and instantly push it into the cloud, as anything from a
-single server through to a highly complex cluster.
+This is an experiment in easy automation of scalable app deployments into
+the Amazon Web Services cloud.  It operates atop the powerful Amazon
+CloudFormation framework [1]_, adding easy box-building capabilities and
+some higher-level operating conveniences.
 
-It uses Amazon Web Services for hosting, Amazon CloudFormation to describe
-a deployment, and awsbox for all the fiddly NodeJS deployment bits:
+AWSBoxen is application-agnostic, but comes with some extra conveniences
+for NodeJS apps due to being inspired by, and built upon, the awsbox [2]_  project.
 
-  * http://awsbox.org/
-  * http://aws.amazon.com/cloudformation/
-
-You might like to think of it as "awsbox on steroids".
-Legal, harmful-side-effect-free steroids.
+.. [1] http://aws.amazon.com/cloudformation/
+.. [2] http://awsbox.org/
 
 
-Quickstart
-----------
+Introduction
+------------
 
-The awsboxen process in a nutshell:
+AWSBoxen is a combination AMI-Generator and CloudFormation-Template-Preprocessor designed
+to get your deployments up and running fast.  Here is the basic AWSBoxen process in a nutshell:
 
   0)  Store your code in git.  We assume you're working from a git checkout.
-  1)  Create a ".awsboxen.json" file at the top level of your project.
-  2)  Populate it with awsbox and CloudFormation configuration data
+  1)  Create a file named ".awsboxen.json" at the top level of your project.
+  2)  Use it to specify how your app should be run and what resources you want created.
   3)  Run "awsboxen deploy".
   4)  Relax as your app is effortlessly deployed to the cloud.
 
 
-The ".awsboxen.json" document describes the entire structure of the deployment.
-It includes awsbox config to specify the code and processes that should be run,
-and CloudFormation config to specify the physical resources on which to run
-them.
+The ".awsboxen.json" file describes the entire structure of the deployment, using an extended version
+of the CloudFormation template language.  It includes instructions on how to build AMIs for running
+your code, and resource definitions to specify the infrastructure in which to deploy them.
+
+
+Describing a Deployment
+-----------------------
+
+The structure of your AWS deployment is described using the AWS CloudFormation
+language, with some shortcuts and helpers that make things a lot more convenient.
+You must provide a file (usually named ".awsboxen.json") with a full description
+of the desired deployment structure.  The two most important sections in this file
+are
+
+    Boxen
+        Describes the different types of machine that will be present in
+        the deployment, and how to build an AMI for each one.
+
+    Resources
+        Describes the cloud resources to be created, such as EC2
+        instances, RDS databases, and Route53 DNS entries.
+
+For a simple NodeJS application, the configuration file might look like this::
+
+    {
+      "Boxen": {
+         "WebHead": {
+           "Type": "AWSBox",
+           "Properties": { "processes": [ "server.js "] }
+         }
+      }
+    }
+
+This specifies that there is a single type of machine in this deployment, and
+that an AMI for it can be built by running `awsbox`_ with the given settings.
+
+Since there are no physical resources specified in this file, AWSBoxen will
+fill in some sensible defaults and produce a complete configuration that looks
+something like this::
+
+    {
+      // Description automatically generated from repo name.
+
+      "Description": "awsboxen deployment of example-server",
+
+      // Enumerates the different types of boxen in this deployment.
+      // Each entry will be used to produce an AMI that can then be
+      // be referenced in the "Resources" section.
+      //
+      // In this case, we have only a single type of box.
+
+      "Boxen": {
+        "WebHead": {
+          "Type": "AWSBox",
+          "Properties": { "processes": [ "server.js "] }
+        }
+      },
+
+      // Enumerates the physical resources that make up the deployment.
+      // This might include a load balancer, a database instance, and some
+      // EC2 instances running boxen that were defined above.
+      //
+      // In the default configuration, we get a single server instance and
+      // a supporting security group.
+
+      "Resources": {
+
+        "WebHeadServer": {
+          "Type": "AWS::EC2::Instance",
+          "Properties": {
+            "InstanceType": "m1.small",
+            "ImageId": { "Ref": "WebHeadAMI" },
+            "SecurityGroups": [{ Ref: 'AWSBoxSecurityGroup' }]
+          }
+        },
+
+        "AWSBoxSecurityGroup": {
+            ...security group guff elided...
+        }
+
+      }
+
+    }
+
+
+This is essentially a CloudFormation template with an extra section describing how to build different types of machine image.
+
+The default setup should typically be enough to get started for small projects.  As your needs grow, you can fill in more
+and more of the deployment description manually rather than relying on the defaults, using all the
+powerful features of the `CloudFormation template language`_.
+
+At deploy time, AWSBoxen will:
+
+  * Build a machine as specified by each Boxen declaration, and freeze it into an AMI.
+  * Use the generated AMI ids as CloudFormation template parameters.
+  * Submit the CloudFormation resource description for creation in AWS.
+
+
+For non-NodeJS applications, Boxen can be built by using a custom build script rather
+than replying on awsbox.  This example includes one AMI built with awsbox and one built
+using a custom build script::
+
+    {
+      "Boxen": {
+        "WebHead": {
+          // Boxen are assumed to be of type "AWSBox" by default
+          // Their properties hash is the awsbox config.
+          "Type": "AWSBox",
+          "Properties": { "processes": [ "server.js "] }
+        },
+        "StorageNode" : {
+          // This box will be built from a base AMI, using a custom script.
+          // Script is located relative to root of project git repo.
+          "Type":  "AWSBoxen::BuildScript",
+          "Properties": {
+            "BaseAMI": "ami-XXXXXX",
+            "BuildScript": "scripts/build_storage_node.sh"
+          }
+      },
+    }
+
+
+Additional build mechanisms (e.g. puppet or chef) may be supported in the
+future.
+
+The CloudFormation template language can be pretty cumbersome, so we also offer some handy
+shortcuts that make it more management.  You can use YAML instead of JSON, and if you provide a
+directory instead of a file then it will be processed recursively, with each child entry forming
+a correspondingly-named key in the generated JSON.  The above example could be produced from a directory
+structure like this::
+
+    .awsboxen/
+        Description.yaml
+        Resources.yaml
+        Boxen/
+           WebHead.json
+        Profiles/
+           Production.json
+
+
+You can also create multiple deployment profiles (e.g. one for dev, one for
+production) by populating the key "Profiles" with additional CloudFormation
+configs.  A specific profile can be selected via command-line option when running
+the awsboxen tool::
+
+    {
+
+      "Boxen": { "WebHead": { "processes": [ "server.js "] } },
+
+      //  By default we use a small instance, for development purposes.
+
+      "Resources": {
+        "WebHead": {
+          "Type": "AWS::EC2::Instance",
+          "Properties": {
+            "InstanceType": "m1.small",
+            "ImageId": { "Ref": "WebHeadAMI" },
+          }
+        }
+      },
+
+      //  But we use a large instance when running in production.
+
+      "Profiles" {
+        "Production": {
+          "Resources": { "WebHead": { "Properties": {
+            "InstanceType": "m1.large"
+          }}}
+        }
+      }
+      
+    }
+
+The special profile name "Default" will be used if present when no explicit
+profile has been specified on the command-line.
+
+
+
+.. _awsbox: http://awsbox.org/
+.. _CloudFormation template languate: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
 
 
 Managing a Deployment
@@ -117,6 +291,7 @@ AWS resources.  It's very highly descructive and cannot be undone, so due
 care should be taken!
 
 
+
 AWS Access Credentials
 ----------------------
 
@@ -128,155 +303,6 @@ matching secret key.  These can be provided in the command-line with the
 The deployment region can also be specified with either `--aws-region` or
 `$AWS_REGION`.  It defaults to us-east-1.
 
-
-Describing a Deployment
------------------------
-
-The structure of your AWS deployment is described using the AWS CloudFormation
-language, with some shortcuts and helpers to make things a little more
-convenient.
-
-Conceptually, you provide a file ".awsboxen.json" with a full description
-of the desired deployment structure - all machine images, load balancers,
-databases, everything.  But that can be pretty complicated, so let's work
-up to it slowly.  Here's the simplest possible ".awsboxen.json" file::
-
-
-    {
-      "processes": [ "server.js "]
-    }
-
-Yes, this is just an awsbox deployment file!  At deploy time awsboxen will
-fill in some sensible defaults, assuming that you want a single all-in-one
-server instance like you'd get from vanilla awsbox.  It will expand the 
-description into something like the following::
-
-    {
-      // Description automatically generated from repo name.
-
-      "Description": "awsboxen deployment of example-server",
-
-      // Enumerates the different types of boxen in this deployment.
-      // Each entry is an awsbox configuration, which will be frozen into
-      // an AMI and can be referenced in the "Resources" section.
-      //
-      // In this case, we have only a single type of box.
-
-      "Boxen": {
-        "AWSBox": {
-          "Type": "AWSBox",
-          "Properties": { "processes": [ "server.js "] }
-        }
-      },
-
-      // Enumerates the physical resources that make up the deployment.
-      // This might include a load balancer, a database instance, and some
-      // EC2 instances running boxen that were defined above.
-      //
-      // In the default configuration, we get a single server instance and
-      // a supporting security group.
-
-      "Resources": {
-
-        "AWSBoxServer": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-            "InstanceType": "m1.small",
-            "ImageId": { "Ref": "AWSBoxAMI" },
-          }
-        },
-
-        "AWSBoxSecurityGroup": {
-            ...security group guff elided...
-        }
-
-      }
-
-    }
-
-
-As your needs grow, you can fill in more and more of the deployment description
-manually rather than relying on the defaults.
-
-You can also create multiple deployment profiles (e.g. one for dev, one for
-production) by populating the key "Profiles" with additional CloudFormation
-configs.  It will be merged into the main configuration when that profile
-is selected::
-
-    {
-
-      "Boxen": { "WebHead": { "processes": [ "server.js "] } },
-
-      //  By default we use a small instance, for development purposes.
-
-      "Resources": {
-        "WebHead": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-            "InstanceType": "m1.small",
-            "ImageId": { "Ref": "WebHeadAMI" },
-          }
-        }
-      },
-
-      //  But we use a large instance when running in production.
-
-      "Profiles" {
-        "Production": {
-          "Resources": { "WebHead": { "Properties": {
-            "InstanceType": "m1.large"
-          }}}
-        }
-      }
-      
-    }
-
-The special profile name "Default" will be used if present when no explicit
-profile has been specified on the command-line.
-
-
-The CloudFormation language can be pretty cumbersome, so we offer some handy
-shortcuts.  You can use YAML instead of JSON, and if you specify a directory
-instead of a file then it will produce a dict with keys corresponding to
-child file names.  The above example could be produced from a directory
-structure like this::
-
-    .awsboxen/
-        Description.yaml
-        Resources.yaml
-        Boxen/
-           WebHead.json
-        Profiles/
-           Production.json
-
-
-To build custom AMIs that do not include all of the software installed
-on awsbox by default, you can specify an explicit box type.  This example
-includes one AMI build with awsbox and one built using a custom build
-script::
-
-    {
-      "Boxen": {
-        "WebHead": {
-          // Boxen are assumed to be of type "AWSBox" by default
-          // Their properties hash is the awsbox config.
-          "Type": "AWSBox",
-          "Properties": { "processes": [ "server.js "] }
-        },
-        "StorageNode" : {
-          // This box will be built from a base AMI, using a custom script.
-          // Script is located relative to root of project git repo.
-          "Type":  "AWSBoxen::BuildScript",
-          "Properties": {
-            "BaseAMI": "ami-XXXXXX",
-            "BuildScript": "scripts/build_storage_node.sh"
-          }
-      },
-    }
-
-Currently only "AWSBox" and "AWSBoxen::BuildScript" types are supported.
-Additional build mechanisms (e.g. puppet or chef) may be supported in the
-future.
 
 
 Handling Secrets
@@ -319,7 +345,7 @@ command-line like so::
 
 
 If the number of parameters grows large, you can store them in a JSON-formatted
-file for eash loading like so::
+file for easy loading like so::
 
     $> echo '{"DBPassword": "MySecretPassword"}' > params.json
     $> 
@@ -351,12 +377,6 @@ attempt working on them:
 
   * Controllable logging/verbosity so that you can get feedback during
     the execution of various commands.
-  * `awsboxen info <stack-name> <resource-name>` to get information
-    about particular resources in the stack.  May be useful for e.g.
-    listing all the instances in an auto-scale group.
-  * avoid re-building AMIs when they haven't actually changed; for example
-    we could identify BuildScript AMIs by the hash of their build script
-    rather than the hash of the entire git repo.
   * Add a "deploy --dry-run" command which prints a summary of the changes
     that will be made, and highlights any potential downtime or destruction
     of existing resources.
