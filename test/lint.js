@@ -16,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 const async = require('async');
 
-const jshint = require('jshint/lib/hint').hint;
+const jshint = require('jshint').JSHINT;
 
 
 // Find .js files beneath the given path, excluding 'node_modules' directories.
@@ -85,15 +85,18 @@ findJSHintRCFile.cache = {};
 //
 function jshintExaminePath(pathName) {
   var errors = [];
-  function noop_reporter(){}
   findJSFiles(pathName).forEach(function(filePathName) {
     var jsHintRCFile = findJSHintRCFile(filePathName);
     var rc = jsHintRCFile ? JSON.parse(fs.readFileSync(jsHintRCFile)) : null;
-    errors = errors.concat(jshint([filePathName], rc, noop_reporter));
+    var src = fs.readFileSync(filePathName).toString();
+    if (!jshint(src, rc)) {
+      errors = errors.concat(jshint.errors.map(function(e) {
+        return e.reason + ' ' + filePathName + ':' + e.line;
+      }));
+      jshint.errors.splice(0);
+    }
   });
-  return errors.map(function(e) {
-    return e.error.reason + ' ' + e.file + ':' + e.error.line;
-  });
+  return errors;
 }
 
 
@@ -101,7 +104,12 @@ describe('linty source checks', function() {
 
   it('jshint should report no warnings for our source files', function(done) {
     var errors = jshintExaminePath(path.dirname(__dirname));
-    assert.deepEqual(errors, []);
+    if (errors.length) {
+      errors.forEach(function(e) {
+        console.log(e);
+      });
+      assert.ok(false);
+    }
     done();
   });
 

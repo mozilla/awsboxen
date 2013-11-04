@@ -14,7 +14,6 @@
     "require",
     "process"
   ],
-  "es5": true,
   "esnext": true,
   "shadow": false,
   "strict": false
