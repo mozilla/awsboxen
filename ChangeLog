@@ -1,7 +1,7 @@
 PENDING
 =======
 
-* ?
+* Automatically upload ssh key if it's not available.
 
 
 0.5.2 - 2013-11-01
