@@ -2,6 +2,7 @@ PENDING
 =======
 
 * Automatically upload ssh key if it's not available.
+* Add "--clear-cached-boxen" option to force rebuilding of AMIs.
 
 
 0.5.2 - 2013-11-01
